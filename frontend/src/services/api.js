@@ -65,6 +65,7 @@ export async function addRelationship(memberId, payload) {
     body: JSON.stringify(payload)
   });
   if (!res.ok) throw new Error('Failed to add relationship');
+  return res.json();
 }
 
 export async function removeRelationship(memberId, payload) {
@@ -74,4 +75,5 @@ export async function removeRelationship(memberId, payload) {
     body: JSON.stringify(payload)
   });
   if (!res.ok) throw new Error('Failed to remove relationship');
+  return res.json();
 }
