@@ -45,19 +45,6 @@ public class FamilyTreeController {
 
 
     @PostMapping("/members/{memberId}/relationships")
-    public ResponseEntity<Void> addRelationship(@PathVariable Long memberId, @Valid @RequestBody ManageRelationshipRequest request) {
-        familyTreeService.addRelationship(memberId, request);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/members/{memberId}/relationships")
-    public ResponseEntity<Void> removeRelationship(@PathVariable Long memberId, @Valid @RequestBody ManageRelationshipRequest request) {
-        familyTreeService.removeRelationship(memberId, request);
-        return ResponseEntity.noContent().build();
-    }
-
-
-    @PostMapping("/members/{memberId}/relationships")
     public FamilyMember addRelationship(@PathVariable Long memberId, @Valid @RequestBody ManageRelationshipRequest request) {
         return familyTreeService.addRelationship(memberId, request);
     }
