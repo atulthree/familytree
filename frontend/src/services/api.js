@@ -1,9 +1,12 @@
 const BASE_URL = 'http://localhost:8080/api';
 
-const authHeaders = () => ({
-  'Content-Type': 'application/json',
-  'X-Auth-Token': localStorage.getItem('token') || ''
-});
+const authHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { 'X-Auth-Token': token } : {})
+  };
+};
 
 export async function login(username, password) {
   const res = await fetch(`${BASE_URL}/auth/login`, {
