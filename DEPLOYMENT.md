@@ -89,7 +89,6 @@ Recommended variables:
 - `SPRING_DATASOURCE_USERNAME`
 - `SPRING_DATASOURCE_PASSWORD`
 - `SERVER_PORT` (optional, default `8080`)
-- `APP_CORS_ALLOWED_ORIGINS` (comma-separated, default `http://localhost:5173,http://127.0.0.1:5173`)
 
 Example:
 
@@ -98,7 +97,6 @@ export SPRING_DATASOURCE_URL='jdbc:postgresql://<db-host>:5432/familytree'
 export SPRING_DATASOURCE_USERNAME='<db-user>'
 export SPRING_DATASOURCE_PASSWORD='<db-password>'
 export SERVER_PORT=8080
-export APP_CORS_ALLOWED_ORIGINS='https://your-frontend-domain.com'
 ```
 
 Build backend jar:
