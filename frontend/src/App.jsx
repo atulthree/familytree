@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import LoginForm from './components/LoginForm';
 import TreePanel from './components/TreePanel';
 import MemberPanel from './components/MemberPanel';
-import { createMember, createTree, deleteMember, getMembers, getTrees, login } from './services/api';
+import { addRelationship, createMember, createTree, deleteMember, getMembers, getTrees, login, removeRelationship } from './services/api';
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -55,6 +55,17 @@ export default function App() {
     await loadMembers(selectedTreeId);
   };
 
+
+  const handleAddRelationship = async (memberId, payload) => {
+    await addRelationship(memberId, payload);
+    await loadMembers(selectedTreeId);
+  };
+
+  const handleRemoveRelationship = async (memberId, payload) => {
+    await removeRelationship(memberId, payload);
+    await loadMembers(selectedTreeId);
+  };
+
   const handleDeleteMember = async (memberId) => {
     await deleteMember(memberId);
     await loadMembers(selectedTreeId);
@@ -83,6 +94,8 @@ export default function App() {
           members={members}
           onCreateMember={handleCreateMember}
           onDeleteMember={handleDeleteMember}
+          onAddRelationship={handleAddRelationship}
+          onRemoveRelationship={handleRemoveRelationship}
         />
       </div>
     </main>

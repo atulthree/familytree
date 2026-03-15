@@ -47,7 +47,6 @@ export async function createMember(treeId, payload) {
     body: JSON.stringify(payload)
   });
   if (!res.ok) throw new Error('Failed to add member');
-  return res.json();
 }
 
 export async function deleteMember(memberId) {
@@ -56,4 +55,23 @@ export async function deleteMember(memberId) {
     headers: authHeaders()
   });
   if (!res.ok) throw new Error('Failed to delete member');
+}
+
+
+export async function addRelationship(memberId, payload) {
+  const res = await fetch(`${BASE_URL}/trees/members/${memberId}/relationships`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error('Failed to add relationship');
+}
+
+export async function removeRelationship(memberId, payload) {
+  const res = await fetch(`${BASE_URL}/trees/members/${memberId}/relationships`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error('Failed to remove relationship');
 }
