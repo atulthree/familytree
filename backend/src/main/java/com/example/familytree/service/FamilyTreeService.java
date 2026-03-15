@@ -65,14 +65,22 @@ public class FamilyTreeService {
         linkRelations(member, request.parentIds(), request.childIds());
     }
 
-    @Transactional
-    public void addRelationship(Long memberId, ManageRelationshipRequest request) {
+
+    public FamilyMember addRelationship(Long memberId, ManageRelationshipRequest request) {
         FamilyMember source = memberRepo.findById(memberId).orElseThrow();
         FamilyMember target = memberRepo.findById(request.targetMemberId()).orElseThrow();
-        validateMembersCanRelate(source, target);
 
         switch (request.type()) {
-            case SPOUSE -> setSpouseRelationship(source, target);
+            case SPOUSE -> {
+                if (source.getSpouse() != null) {
+                    source.getSpouse().setSpouse(null);
+                }
+                if (target.getSpouse() != null) {
+                    target.getSpouse().setSpouse(null);
+                }
+                source.setSpouse(target);
+                target.setSpouse(source);
+            }
             case PARENT -> {
                 source.getParents().add(target);
                 target.getChildren().add(source);
@@ -82,17 +90,18 @@ public class FamilyTreeService {
                 target.getParents().add(source);
             }
         }
+
+        memberRepo.save(target);
+        return memberRepo.save(source);
     }
 
-    @Transactional
-    public void removeRelationship(Long memberId, ManageRelationshipRequest request) {
+    public FamilyMember removeRelationship(Long memberId, ManageRelationshipRequest request) {
         FamilyMember source = memberRepo.findById(memberId).orElseThrow();
         FamilyMember target = memberRepo.findById(request.targetMemberId()).orElseThrow();
-        validateMembersCanRelate(source, target);
 
         switch (request.type()) {
             case SPOUSE -> {
-                if (source.getSpouse() != null && Objects.equals(source.getSpouse().getId(), target.getId())) {
+                if (source.getSpouse() != null && source.getSpouse().getId().equals(target.getId())) {
                     source.setSpouse(null);
                     target.setSpouse(null);
                 }
@@ -106,9 +115,11 @@ public class FamilyTreeService {
                 target.getParents().remove(source);
             }
         }
+
+        memberRepo.save(target);
+        return memberRepo.save(source);
     }
 
-    @Transactional
     public void deleteMember(Long memberId) {
         FamilyMember member = memberRepo.findById(memberId).orElseThrow();
         if (member.getSpouse() != null) {
