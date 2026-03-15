@@ -1,6 +1,7 @@
 package com.example.familytree.controller;
 
 import com.example.familytree.dto.CreateMemberRequest;
+import com.example.familytree.dto.ManageRelationshipRequest;
 import com.example.familytree.dto.CreateTreeRequest;
 import com.example.familytree.model.FamilyMember;
 import com.example.familytree.model.FamilyTree;
@@ -39,6 +40,17 @@ public class FamilyTreeController {
     @PostMapping("/{treeId}/members")
     public FamilyMember addMember(@PathVariable Long treeId, @Valid @RequestBody CreateMemberRequest request) {
         return familyTreeService.addMember(treeId, request);
+    }
+
+
+    @PostMapping("/members/{memberId}/relationships")
+    public FamilyMember addRelationship(@PathVariable Long memberId, @Valid @RequestBody ManageRelationshipRequest request) {
+        return familyTreeService.addRelationship(memberId, request);
+    }
+
+    @DeleteMapping("/members/{memberId}/relationships")
+    public FamilyMember removeRelationship(@PathVariable Long memberId, @Valid @RequestBody ManageRelationshipRequest request) {
+        return familyTreeService.removeRelationship(memberId, request);
     }
 
     @DeleteMapping("/members/{memberId}")
