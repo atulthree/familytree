@@ -45,3 +45,6 @@ Frontend runs on `http://localhost:5173`.
 
 ## API auth
 Call `POST /api/auth/login` and send returned token in `X-Auth-Token` header.
+
+## Deployment docs
+See [DEPLOYMENT.md](DEPLOYMENT.md) for local and production deployment steps.
