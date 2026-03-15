@@ -47,7 +47,6 @@ export async function createMember(treeId, payload) {
     body: JSON.stringify(payload)
   });
   if (!res.ok) throw new Error('Failed to add member');
-  return res.json();
 }
 
 export async function deleteMember(memberId) {

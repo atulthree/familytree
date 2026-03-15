@@ -38,8 +38,22 @@ public class FamilyTreeController {
     }
 
     @PostMapping("/{treeId}/members")
-    public FamilyMember addMember(@PathVariable Long treeId, @Valid @RequestBody CreateMemberRequest request) {
-        return familyTreeService.addMember(treeId, request);
+    public ResponseEntity<Void> addMember(@PathVariable Long treeId, @Valid @RequestBody CreateMemberRequest request) {
+        familyTreeService.addMember(treeId, request);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @PostMapping("/members/{memberId}/relationships")
+    public ResponseEntity<Void> addRelationship(@PathVariable Long memberId, @Valid @RequestBody ManageRelationshipRequest request) {
+        familyTreeService.addRelationship(memberId, request);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/members/{memberId}/relationships")
+    public ResponseEntity<Void> removeRelationship(@PathVariable Long memberId, @Valid @RequestBody ManageRelationshipRequest request) {
+        familyTreeService.removeRelationship(memberId, request);
+        return ResponseEntity.noContent().build();
     }
 
 
