@@ -8,8 +8,10 @@ import com.example.familytree.repository.FamilyMemberRepository;
 import com.example.familytree.repository.FamilyTreeRepository;
 import com.example.familytree.repository.UserAccountRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -42,7 +44,8 @@ public class FamilyTreeService {
         return memberRepo.findByTree(tree);
     }
 
-    public FamilyMember addMember(Long treeId, CreateMemberRequest request) {
+    @Transactional
+    public void addMember(Long treeId, CreateMemberRequest request) {
         FamilyTree tree = treeRepo.findById(treeId).orElseThrow();
         FamilyMember member = new FamilyMember();
         member.setName(request.name());
@@ -51,16 +54,15 @@ public class FamilyTreeService {
         member.setDob(request.dob());
         member.setImage(request.image());
         member.setTree(tree);
+        memberRepo.save(member);
 
         if (request.spouseId() != null) {
             FamilyMember spouse = memberRepo.findById(request.spouseId()).orElseThrow();
-            member.setSpouse(spouse);
-            spouse.setSpouse(member);
+            validateMembersCanRelate(member, spouse);
+            setSpouseRelationship(member, spouse);
         }
 
-        memberRepo.save(member);
         linkRelations(member, request.parentIds(), request.childIds());
-        return memberRepo.save(member);
     }
 
 
@@ -137,6 +139,7 @@ public class FamilyTreeService {
         if (parentIds != null) {
             parentIds.forEach(parentId -> {
                 FamilyMember parent = memberRepo.findById(parentId).orElseThrow();
+                validateMembersCanRelate(member, parent);
                 member.getParents().add(parent);
                 parent.getChildren().add(member);
             });
@@ -144,9 +147,30 @@ public class FamilyTreeService {
         if (childIds != null) {
             childIds.forEach(childId -> {
                 FamilyMember child = memberRepo.findById(childId).orElseThrow();
+                validateMembersCanRelate(member, child);
                 member.getChildren().add(child);
                 child.getParents().add(member);
             });
+        }
+    }
+
+    private void setSpouseRelationship(FamilyMember source, FamilyMember target) {
+        if (source.getSpouse() != null && !Objects.equals(source.getSpouse().getId(), target.getId())) {
+            source.getSpouse().setSpouse(null);
+        }
+        if (target.getSpouse() != null && !Objects.equals(target.getSpouse().getId(), source.getId())) {
+            target.getSpouse().setSpouse(null);
+        }
+        source.setSpouse(target);
+        target.setSpouse(source);
+    }
+
+    private void validateMembersCanRelate(FamilyMember source, FamilyMember target) {
+        if (Objects.equals(source.getId(), target.getId())) {
+            throw new IllegalArgumentException("A member cannot relate to itself");
+        }
+        if (!Objects.equals(source.getTree().getId(), target.getTree().getId())) {
+            throw new IllegalArgumentException("Members must belong to the same tree");
         }
     }
 }
