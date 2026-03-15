@@ -3,15 +3,11 @@ package com.example.familytree.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "family_members")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -53,4 +49,84 @@ public class FamilyMember {
 
     @ManyToMany(mappedBy = "children")
     private Set<FamilyMember> parents = new HashSet<>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public Sex getSex() {
+        return sex;
+    }
+
+    public void setSex(Sex sex) {
+        this.sex = sex;
+    }
+
+    public LocalDate getDob() {
+        return dob;
+    }
+
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public FamilyTree getTree() {
+        return tree;
+    }
+
+    public void setTree(FamilyTree tree) {
+        this.tree = tree;
+    }
+
+    public FamilyMember getSpouse() {
+        return spouse;
+    }
+
+    public void setSpouse(FamilyMember spouse) {
+        this.spouse = spouse;
+    }
+
+    public Set<FamilyMember> getChildren() {
+        return children;
+    }
+
+    public void setChildren(Set<FamilyMember> children) {
+        this.children = children;
+    }
+
+    public Set<FamilyMember> getParents() {
+        return parents;
+    }
+
+    public void setParents(Set<FamilyMember> parents) {
+        this.parents = parents;
+    }
 }
