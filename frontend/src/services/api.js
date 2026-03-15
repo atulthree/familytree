@@ -57,3 +57,24 @@ export async function deleteMember(memberId) {
   });
   if (!res.ok) throw new Error('Failed to delete member');
 }
+
+
+export async function addRelationship(memberId, payload) {
+  const res = await fetch(`${BASE_URL}/trees/members/${memberId}/relationships`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error('Failed to add relationship');
+  return res.json();
+}
+
+export async function removeRelationship(memberId, payload) {
+  const res = await fetch(`${BASE_URL}/trees/members/${memberId}/relationships`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error('Failed to remove relationship');
+  return res.json();
+}

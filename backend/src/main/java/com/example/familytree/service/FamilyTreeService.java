@@ -1,6 +1,7 @@
 package com.example.familytree.service;
 
 import com.example.familytree.dto.CreateMemberRequest;
+import com.example.familytree.dto.ManageRelationshipRequest;
 import com.example.familytree.model.FamilyMember;
 import com.example.familytree.model.FamilyTree;
 import com.example.familytree.repository.FamilyMemberRepository;
@@ -60,6 +61,61 @@ public class FamilyTreeService {
         memberRepo.save(member);
         linkRelations(member, request.parentIds(), request.childIds());
         return memberRepo.save(member);
+    }
+
+
+    public FamilyMember addRelationship(Long memberId, ManageRelationshipRequest request) {
+        FamilyMember source = memberRepo.findById(memberId).orElseThrow();
+        FamilyMember target = memberRepo.findById(request.targetMemberId()).orElseThrow();
+
+        switch (request.type()) {
+            case SPOUSE -> {
+                if (source.getSpouse() != null) {
+                    source.getSpouse().setSpouse(null);
+                }
+                if (target.getSpouse() != null) {
+                    target.getSpouse().setSpouse(null);
+                }
+                source.setSpouse(target);
+                target.setSpouse(source);
+            }
+            case PARENT -> {
+                source.getParents().add(target);
+                target.getChildren().add(source);
+            }
+            case CHILD -> {
+                source.getChildren().add(target);
+                target.getParents().add(source);
+            }
+        }
+
+        memberRepo.save(target);
+        return memberRepo.save(source);
+    }
+
+    public FamilyMember removeRelationship(Long memberId, ManageRelationshipRequest request) {
+        FamilyMember source = memberRepo.findById(memberId).orElseThrow();
+        FamilyMember target = memberRepo.findById(request.targetMemberId()).orElseThrow();
+
+        switch (request.type()) {
+            case SPOUSE -> {
+                if (source.getSpouse() != null && source.getSpouse().getId().equals(target.getId())) {
+                    source.setSpouse(null);
+                    target.setSpouse(null);
+                }
+            }
+            case PARENT -> {
+                source.getParents().remove(target);
+                target.getChildren().remove(source);
+            }
+            case CHILD -> {
+                source.getChildren().remove(target);
+                target.getParents().remove(source);
+            }
+        }
+
+        memberRepo.save(target);
+        return memberRepo.save(source);
     }
 
     public void deleteMember(Long memberId) {
